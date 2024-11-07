@@ -54,7 +54,8 @@ impl<T> OneshotChannel<T> {
 impl<T> Sender<'_, T> {
     pub fn send(self, message: T) {
         unsafe { (*self.channel.message.get()).write(message) };
-        self.channel.ready.store(true, Release)
+        self.channel.ready.store(true, Release);
+        self.receiving_thread.unpark();
     }
 }
 
